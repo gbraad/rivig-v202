@@ -22,6 +22,8 @@
     DEALINGS IN THE SOFTWARE.
 */
 
+#include "Arduino.h"
+
 /* Memory Map */
 #define CONFIG      0x00
 #define EN_AA       0x01
@@ -123,3 +125,25 @@
 #define RF_DR_HIGH  3
 #define RF_PWR_LOW  1
 #define RF_PWR_HIGH 2
+
+class nRF24 {
+  uint8_t ce_pin, csn_pin, payload_size;
+  bool dynamic_payloads_enabled;
+public:
+  nRF24(uint8_t _cepin, uint8_t _cspin):
+    ce_pin(_cepin), csn_pin(_cspin), payload_size(16), dynamic_payloads_enabled(false)
+  {}
+  void begin();
+  void csn(int mode);
+  void ce(int level);
+  uint8_t read_register(uint8_t reg, uint8_t* buf, uint8_t len);
+  uint8_t read_register(uint8_t reg);
+  uint8_t write_register(uint8_t reg, const uint8_t* buf, uint8_t len);
+  uint8_t write_register(uint8_t reg, uint8_t value);
+  uint8_t write_payload(const void* buf, uint8_t len);
+  uint8_t read_payload(void* buf, uint8_t len);
+  uint8_t flush_rx(void);
+  uint8_t flush_tx(void);
+  void    activate(uint8_t code);
+};
+
